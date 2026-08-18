@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { dashboardData as d } from './data.js'
 
-// defectThemes entries are prefixed "OPEN — " or "CLOSED <date> — ".
-// Closed items are kept in the data deliberately so a reclassified or resolved
-// theme stays visible rather than silently vanishing — but they must not be
-// rendered under an "Open" heading.
-const isClosed = t => t.trim().toUpperCase().startsWith('CLOSED')
-const stripPrefix = t => t.replace(/^\s*(OPEN|CLOSED[^—]*)—\s*/i, '')
-const openThemes = d.defectThemes.filter(t => !isClosed(t))
-const closedThemes = d.defectThemes.filter(isClosed)
+// defectThemes entries are { status: 'open' | 'closed', text }.
+// Closed items stay in the data deliberately so a resolved or reclassified theme
+// remains visible rather than silently vanishing from the record — but they must
+// not be rendered under an "Open" heading.
+// Anything without an explicit status is treated as open, so a malformed entry
+// surfaces on the page rather than disappearing from it.
+const themes = d.defectThemes.map(t =>
+  typeof t === 'string' ? { status: 'open', text: t } : t
+)
+const openThemes = themes.filter(t => t.status !== 'closed')
+const closedThemes = themes.filter(t => t.status === 'closed')
 
 const sev = level => d.severity.find(s => s.level === level) || { count: 0, exact: true, note: '' }
 
@@ -49,7 +52,11 @@ function StatsGrid() {
           sub={l.exact ? undefined : 'approximate'}
           title={l.note}
         />
-        <StatCard label="Open themes" value={openThemes.length} sub={closedThemes.length ? `${closedThemes.length} closed` : undefined} />
+        <StatCard
+          label="Open themes"
+          value={openThemes.length}
+          sub={closedThemes.length ? `${closedThemes.length} closed` : undefined}
+        />
         <StatCard label="Never tested" value={d.summary.neverTested} sub="entries" />
       </div>
       <p className="caveat">
@@ -89,7 +96,7 @@ function Overview() {
       <div className="card">
         <h2>Open defect themes — {openThemes.length}</h2>
         <ul className="themes">
-          {openThemes.map((t, i) => <li key={i}>{stripPrefix(t)}</li>)}
+          {openThemes.map((t, i) => <li key={i}>{t.text}</li>)}
         </ul>
       </div>
       {closedThemes.length > 0 && (
@@ -99,7 +106,7 @@ function Overview() {
             Kept visible so a resolved or reclassified theme is not mistaken for one that was never found.
           </p>
           <ul className="themes closed">
-            {closedThemes.map((t, i) => <li key={i}>{t}</li>)}
+            {closedThemes.map((t, i) => <li key={i}>{t.text}</li>)}
           </ul>
         </div>
       )}
