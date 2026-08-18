@@ -56,6 +56,32 @@ export const dashboardData = {
     { status: "closed", text: "Mapping dialogs have no Save/Cancel — RESOLVED 2026-08-18. Both Add and Update Individual Mapping now render a full footer with divider and a right-aligned Create/Update button." },
     { status: "closed", text: "Confirm-dialog component ships with no dividers — RECLASSIFIED 2026-08-18 as not-a-defect. The divider standard applies to form modals only (input fields + save action). Confirm dialogs have no inputs, so no dividers are expected." },
   ],
+
+  // featureReports: visual before/after evidence, rendered on the Evidence tab.
+  //   before / after — image paths served from public/ (so "/screenshots/x.png"
+  //                    means the file lives at public/screenshots/x.png).
+  //                    Set to null if no image is available yet; the UI shows a
+  //                    placeholder rather than a broken image.
+  //   status         — "open" or "fixed", drives the badge colour.
+  // Images are committed by hand: the agent records the metadata but cannot push
+  // binary files, so the PNGs must be added to public/screenshots/ separately.
+  featureReports: [
+    {
+      title: "Shared DialogComponent does not guarantee the divider standard",
+      date: "2026-08-18",
+      screen: "Payables › Receive › Receive via Supplier Portal  vs  Documents › Upload by email",
+      status: "open",
+      summary:
+        "Both dialogs import the same DialogComponent from src/components/Dialog.tsx, yet only one renders the standard correctly. Invitation.tsx has zero <hr> elements — no divider under the header, none above the footer. UploadByEmail.tsx, from the same shared component, renders both correctly. This is why 'point it at the shared component' is not on its own a sufficient fix for the remaining broken dialogs.",
+      before: "/screenshots/before-invitation.png",
+      beforeLabel: "Fails — Invitation.tsx",
+      beforeAlt: "Receive via Supplier Portal dialog with no divider below the header and none above the footer",
+      after: "/screenshots/after-uploadbyemail.png",
+      afterLabel: "Passes — UploadByEmail.tsx",
+      afterAlt: "Upload by email dialog showing a divider below the header, a divider above the footer, and a right-aligned Close button",
+      url: null,
+    },
+  ],
   recentRuns: [
     { date: "2026-08-18", scope: "Modal divider regression (10 prior findings) + profile-menu screens", outcome: "3 FIXED (Add/Update Mapping, Create filtered view) · 6 persisting · 3 NEW (Invitation, Edit Role, plus 3 screens first-tested)", url: null },
     { date: "2026-08-17", scope: "Workflow Templates (first pass) + Documents (regression)", outcome: "New 0 · Fixed 0 · Persisting 3 · 3 new findings on Workflow Templates", url: "https://app.notion.com/p/3bf0f4c873ef81d3b5adcc2a8406bade" },
@@ -81,5 +107,6 @@ export const dashboardData = {
     "Real OS drag-and-drop and clipboard paste cannot be automated — synthetic events do not trigger the app's handlers. Manual only.",
     "Upload pipeline currently returns 500, blocking all downstream extraction and classification testing.",
     "5 campaigns have no baseline page (modal consistency, Ask Dost, file upload, document upload, performance) — their findings cannot be regression-compared.",
+    "Screenshots cannot be committed by the agent — binary files exceed what the GitHub tool can carry. Evidence images must be added to public/screenshots/ by hand.",
   ],
 };
