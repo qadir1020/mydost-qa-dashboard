@@ -58,13 +58,17 @@ export const dashboardData = {
   ],
 
   // featureReports: visual before/after evidence, rendered on the Evidence tab.
-  //   before / after — image paths served from public/ (so "/screenshots/x.png"
-  //                    means the file lives at public/screenshots/x.png).
+  //   before / after — image paths served from public/ (so "/screenshots/x.svg"
+  //                    means the file lives at public/screenshots/x.svg).
   //                    Set to null if no image is available yet; the UI shows a
   //                    placeholder rather than a broken image.
   //   status         — "open" or "fixed", drives the badge colour.
-  // Images are committed by hand: the agent records the metadata but cannot push
-  // binary files, so the PNGs must be added to public/screenshots/ separately.
+  //
+  // NOTE ON IMAGE FORMAT: the entry below uses committed SVG mockups rather than
+  // real PNG screenshots. SVG is text, so it can be committed through the same
+  // path as code; PNGs cannot (binary exceeds what the tooling can carry) and
+  // must be added to public/screenshots/ by hand. Swap the paths to .png once the
+  // real captures are committed — nothing else needs to change.
   featureReports: [
     {
       title: "Shared DialogComponent does not guarantee the divider standard",
@@ -72,13 +76,13 @@ export const dashboardData = {
       screen: "Payables › Receive › Receive via Supplier Portal  vs  Documents › Upload by email",
       status: "open",
       summary:
-        "Both dialogs import the same DialogComponent from src/components/Dialog.tsx, yet only one renders the standard correctly. Invitation.tsx has zero <hr> elements — no divider under the header, none above the footer. UploadByEmail.tsx, from the same shared component, renders both correctly. This is why 'point it at the shared component' is not on its own a sufficient fix for the remaining broken dialogs.",
-      before: "/screenshots/before-invitation.png",
+        "Both dialogs import the same DialogComponent from src/components/Dialog.tsx, yet only one renders the standard correctly. Invitation.tsx has zero <hr> elements — no divider under the header, none above the footer. UploadByEmail.tsx, from the same shared component, renders both correctly. This is why 'point it at the shared component' is not on its own a sufficient fix for the remaining broken dialogs. Images below are annotated mockups of the two measured states, not raw captures.",
+      before: "/screenshots/demo-before.svg",
       beforeLabel: "Fails — Invitation.tsx",
-      beforeAlt: "Receive via Supplier Portal dialog with no divider below the header and none above the footer",
-      after: "/screenshots/after-uploadbyemail.png",
+      beforeAlt: "Receive via Supplier Portal dialog with no divider below the header and none above the footer, both gaps marked in red",
+      after: "/screenshots/demo-after.svg",
       afterLabel: "Passes — UploadByEmail.tsx",
-      afterAlt: "Upload by email dialog showing a divider below the header, a divider above the footer, and a right-aligned Close button",
+      afterAlt: "Upload by email dialog showing a divider below the header, a divider above the footer, and a right-aligned Close button, both dividers marked in green",
       url: null,
     },
   ],
@@ -107,6 +111,6 @@ export const dashboardData = {
     "Real OS drag-and-drop and clipboard paste cannot be automated — synthetic events do not trigger the app's handlers. Manual only.",
     "Upload pipeline currently returns 500, blocking all downstream extraction and classification testing.",
     "5 campaigns have no baseline page (modal consistency, Ask Dost, file upload, document upload, performance) — their findings cannot be regression-compared.",
-    "Screenshots cannot be committed by the agent — binary files exceed what the GitHub tool can carry. Evidence images must be added to public/screenshots/ by hand.",
+    "Screenshots cannot be committed by the agent — binary files exceed what the GitHub tool can carry. Evidence images must be added to public/screenshots/ by hand, or the entry uses an SVG mockup instead.",
   ],
 };
