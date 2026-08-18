@@ -40,15 +40,21 @@ export const dashboardData = {
   // H6 (Add/Update Individual Mapping had no Save/Cancel) was RESOLVED 2026-08-18
   // and removed from `high`. IDs are intentionally not renumbered so existing
   // references stay valid.
+
+  // defectThemes: each entry is { status, text }.
+  //   status: "open"   — still outstanding
+  //           "closed" — resolved or reclassified; kept so a closed theme stays
+  //                      visible rather than silently vanishing from the record.
+  // Do NOT encode status in the text — the UI filters on this field.
   defectThemes: [
-    "OPEN — Form modals missing the footer divider. 3 instances: Create workflow template (buttons sit inside DialogContent rather than a DialogActions footer, so there is no boundary for a divider), Edit Role (header divider added 2026-08-18, footer still absent), and Invitation.tsx (zero <hr> — neither divider). All Medium.",
-    "OPEN — Shared DialogComponent does not guarantee correct rendering. Of 7 testable consumers of src/components/Dialog.tsx, 2 render incorrectly (Invitation.tsx; UploadFromDevice.tsx in its empty dropzone state). Identify what UploadByEmail.tsx does differently before treating \"point it at the shared component\" as the fix.",
-    "OPEN — Oversized-file upload has no client-side size gate: full transfer then raw CORS error, on 4 surfaces. See C5.",
-    "OPEN — Extraction pipeline leaks template artifacts: Vendor Company Name: <id>} <address>} on 6+ documents, plus a shared fallback total of €321,321.00 on every document inspected. Shape reads as an unclosed {{…}} expression.",
-    "OPEN — Notification endpoints poll roughly once per second on every screen, idle or not.",
-    "OPEN — Session drops silently on a 502 from refreshToken: no message, no retry, work lost. Killed one test run outright.",
-    "CLOSED 2026-08-18 — Mapping dialogs have no Save/Cancel. RESOLVED: both Add and Update Individual Mapping now render a full footer with divider and a right-aligned Create/Update button.",
-    "CLOSED 2026-08-18 — Confirm-dialog component ships with no dividers. RECLASSIFIED as not-a-defect: the divider standard applies to form modals only (input fields + save action). Confirm dialogs have no inputs, so no dividers are expected.",
+    { status: "open", text: "Form modals missing the footer divider. 3 instances: Create workflow template (buttons sit inside DialogContent rather than a DialogActions footer, so there is no boundary for a divider), Edit Role (header divider added 2026-08-18, footer still absent), and Invitation.tsx (zero <hr> — neither divider). All Medium." },
+    { status: "open", text: "Shared DialogComponent does not guarantee correct rendering. Of 7 testable consumers of src/components/Dialog.tsx, 2 render incorrectly (Invitation.tsx; UploadFromDevice.tsx in its empty dropzone state). Identify what UploadByEmail.tsx does differently before treating \"point it at the shared component\" as the fix." },
+    { status: "open", text: "Oversized-file upload has no client-side size gate: full transfer then raw CORS error, on 4 surfaces. See C5." },
+    { status: "open", text: "Extraction pipeline leaks template artifacts: Vendor Company Name: <id>} <address>} on 6+ documents, plus a shared fallback total of €321,321.00 on every document inspected. Shape reads as an unclosed {{…}} expression." },
+    { status: "open", text: "Notification endpoints poll roughly once per second on every screen, idle or not." },
+    { status: "open", text: "Session drops silently on a 502 from refreshToken: no message, no retry, work lost. Killed one test run outright." },
+    { status: "closed", text: "Mapping dialogs have no Save/Cancel — RESOLVED 2026-08-18. Both Add and Update Individual Mapping now render a full footer with divider and a right-aligned Create/Update button." },
+    { status: "closed", text: "Confirm-dialog component ships with no dividers — RECLASSIFIED 2026-08-18 as not-a-defect. The divider standard applies to form modals only (input fields + save action). Confirm dialogs have no inputs, so no dividers are expected." },
   ],
   recentRuns: [
     { date: "2026-08-18", scope: "Modal divider regression (10 prior findings) + profile-menu screens", outcome: "3 FIXED (Add/Update Mapping, Create filtered view) · 6 persisting · 3 NEW (Invitation, Edit Role, plus 3 screens first-tested)", url: null },
