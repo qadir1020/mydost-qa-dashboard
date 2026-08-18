@@ -13,6 +13,8 @@ const themes = d.defectThemes.map(t =>
 const openThemes = themes.filter(t => t.status !== 'closed')
 const closedThemes = themes.filter(t => t.status === 'closed')
 
+const reports = d.featureReports || []
+
 const sev = level => d.severity.find(s => s.level === level) || { count: 0, exact: true, note: '' }
 
 function StatCard({ label, value, sub, className, title }) {
@@ -135,6 +137,50 @@ function Issues() {
   )
 }
 
+// Renders one image slot. If the file is missing the alt text still describes
+// what should be there, so a broken path is obvious rather than silent.
+function Shot({ src, alt, label, tone }) {
+  return (
+    <figure className="shot">
+      <figcaption className={`shot-label ${tone || ''}`}>{label}</figcaption>
+      {src
+        ? <img src={src} alt={alt} loading="lazy" />
+        : <div className="shot-missing">No image supplied</div>}
+    </figure>
+  )
+}
+
+function Evidence() {
+  if (!reports.length) {
+    return (
+      <div className="card">
+        <h2>Evidence</h2>
+        <p className="muted">No before/after comparisons recorded yet.</p>
+      </div>
+    )
+  }
+  return (
+    <>
+      {reports.map((r, i) => (
+        <div className="card" key={i}>
+          <h2>{r.title}</h2>
+          <div className="report-meta">
+            <span>{r.date}</span>
+            {r.screen && <><span className="dot">·</span><span>{r.screen}</span></>}
+            {r.status && <><span className="dot">·</span><span className={`badge ${r.status === 'fixed' ? 'ok' : 'high'}`}>{r.status}</span></>}
+            {r.url && <><span className="dot">·</span><a href={r.url} target="_blank" rel="noreferrer">Source report</a></>}
+          </div>
+          {r.summary && <p className="report-summary">{r.summary}</p>}
+          <div className="shots">
+            <Shot src={r.before} alt={r.beforeAlt || `Before: ${r.title}`} label={r.beforeLabel || 'Before'} tone="bad" />
+            <Shot src={r.after} alt={r.afterAlt || `After: ${r.title}`} label={r.afterLabel || 'After'} tone="good" />
+          </div>
+        </div>
+      ))}
+    </>
+  )
+}
+
 function Runs() {
   return (
     <div className="card">
@@ -180,6 +226,7 @@ function Links() {
 const TABS = [
   { key: 'overview', label: 'Overview', render: Overview },
   { key: 'issues', label: 'Issues', render: Issues },
+  { key: 'evidence', label: `Evidence${reports.length ? ` (${reports.length})` : ''}`, render: Evidence },
   { key: 'runs', label: 'Recent runs', render: Runs },
   { key: 'links', label: 'Links', render: Links },
 ]
