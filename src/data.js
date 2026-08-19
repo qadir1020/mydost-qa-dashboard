@@ -1,21 +1,21 @@
-// Snapshot of the Dost Portal QA Dashboard (Notion) as of 2026-08-18.
+// Snapshot of the Dost Portal QA Dashboard (Notion) as of 2026-08-19.
 // To refresh: update this file manually, or wire up scripts/sync-notion.js
 // (see README) to pull live data via the Notion API.
 
 export const dashboardData = {
   environment: "dev-mydost-webapp-dostui.azurewebsites.net",
-  lastRun: "2026-08-18 — modal divider regression + profile-menu screens (My Account, Users Management, Companies)",
+  lastRun: "2026-08-19 — Catalog › Dimensions CRUD attempt: screen confirmed permission-gated for the test account, blocking all CRUD; contradicts a user-supplied screenshot, prior permission-locked finding confirmed correct not misdiagnosed",
   summary: {
-    coverage: { tested: 37, total: 48, percent: 77 },
+    coverage: { tested: 38, total: 49, percent: 78 },
     neverTested: 11,
     stale: 0,
     defectThemes: 6,
-    activeBaselines: 3,
+    activeBaselines: 4,
   },
   severity: [
     { level: "Critical", count: 6, note: "All enumerated below — unchanged", exact: true },
     { level: "High", count: 9, note: "All enumerated below — was 10; H6 resolved 2026-08-18", exact: true },
-    { level: "Medium", count: 45, note: "Aggregate across campaigns — dominated by 22 untranslated-copy items and 7 raw-identifier items from the localization sweep, plus the open modal-divider findings", exact: false },
+    { level: "Medium", count: 46, note: "Aggregate across campaigns — dominated by 22 untranslated-copy items and 7 raw-identifier items from the localization sweep, plus the open modal-divider findings and the new Catalog Dimensions access-contradiction finding", exact: false },
     { level: "Low", count: 8, note: "Cosmetic and polish", exact: false },
   ],
   critical: [
@@ -40,6 +40,10 @@ export const dashboardData = {
   // H6 (Add/Update Individual Mapping had no Save/Cancel) was RESOLVED 2026-08-18
   // and removed from `high`. IDs are intentionally not renumbered so existing
   // references stay valid.
+  //
+  // Catalog Dimensions CRUD attempt (2026-08-19) produced no Critical/High —
+  // the finding is a Medium (access contradiction, not a confirmed bug; see
+  // defectThemes and the Catalog Dimensions baseline for detail).
 
   // defectThemes: each entry is { status, text }.
   //   status: "open"   — still outstanding
@@ -53,6 +57,7 @@ export const dashboardData = {
     { status: "open", text: "Extraction pipeline leaks template artifacts: Vendor Company Name: <id>} <address>} on 6+ documents, plus a shared fallback total of €321,321.00 on every document inspected. Shape reads as an unclosed {{…}} expression." },
     { status: "open", text: "Notification endpoints poll roughly once per second on every screen, idle or not." },
     { status: "open", text: "Session drops silently on a 502 from refreshToken: no message, no retry, work lost. Killed one test run outright." },
+    { status: "open", text: "Catalog › Dimensions is permission-gated for the test account (Abdul Qadir / aqabbasi@mydost.ai) — sidebar item is a disabled control with a lock icon and tooltip, and /catalog/dimensions redirects to /404. This contradicts a user-supplied screenshot claiming the screen was open and populated on the same account. Cause unresolved (candidates: role change between sessions, different tenant/company context, session-state drift). CRUD on Dimensions and Dimension Values remains entirely untested as a result. See QA Baseline — Catalog Dimensions CRUD — 2026-08-19." },
     { status: "closed", text: "Mapping dialogs have no Save/Cancel — RESOLVED 2026-08-18. Both Add and Update Individual Mapping now render a full footer with divider and a right-aligned Create/Update button." },
     { status: "closed", text: "Confirm-dialog component ships with no dividers — RECLASSIFIED 2026-08-18 as not-a-defect. The divider standard applies to form modals only (input fields + save action). Confirm dialogs have no inputs, so no dividers are expected." },
   ],
@@ -85,8 +90,24 @@ export const dashboardData = {
       afterAlt: "Upload by email dialog showing a divider below the header, a divider above the footer, and a right-aligned Close button, both dividers marked in green",
       url: null,
     },
+    {
+      title: "Catalog Dimensions — permission lock, no image evidence committed",
+      date: "2026-08-19",
+      screen: "Catalog › Dimensions",
+      status: "open",
+      summary:
+        "Sidebar screenshot taken this run shows a visible lock icon next to \"Dimensions\", distinct from Items/Taxes which have none, plus an accessible tooltip reading \"You don't have permission. Please update your role or contact the administrator.\" A screenshot of this evidence was captured locally during the run but not committed here (PNG binary cannot be carried by this sync path). See the linked baseline for the full description and repro steps.",
+      before: null,
+      beforeLabel: null,
+      beforeAlt: null,
+      after: null,
+      afterLabel: null,
+      afterAlt: null,
+      url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66",
+    },
   ],
   recentRuns: [
+    { date: "2026-08-19", scope: "Catalog › Dimensions CRUD attempt (CRUD-only scope, mid-run trim)", outcome: "BLOCKED — 0 CRUD ops possible, permission wall confirmed correct (not a route bug); 1 Medium finding (unresolved contradiction with a user-supplied screenshot)", url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66" },
     { date: "2026-08-18", scope: "Modal divider regression (10 prior findings) + profile-menu screens", outcome: "3 FIXED (Add/Update Mapping, Create filtered view) · 6 persisting · 3 NEW (Invitation, Edit Role, plus 3 screens first-tested)", url: null },
     { date: "2026-08-17", scope: "Workflow Templates (first pass) + Documents (regression)", outcome: "New 0 · Fixed 0 · Persisting 3 · 3 new findings on Workflow Templates", url: "https://app.notion.com/p/3bf0f4c873ef81d3b5adcc2a8406bade" },
     { date: "2026-08-17", scope: "Modal consistency — Configuration (12 modals)", outcome: "4 fail: 3 confirm dialogs no dividers, Update Mapping no footer", url: null },
@@ -96,7 +117,6 @@ export const dashboardData = {
     { date: "2026-08-17", scope: "Ask Dost — 21-case re-run + Spanish case 20", outcome: "Tables/charts FIXED; approval flow intermittent; approval-card labels NEW", url: null },
     { date: "2026-08-13", scope: "Document upload — Documents + Payables", outcome: "1 Critical (wrong document content), 1 High (extraction)", url: null },
     { date: "2026-08-13", scope: "Ask Dost file attachments (8 cases)", outcome: "6 pass, 3 defects; no hallucination on PDF or Excel", url: null },
-    { date: "2026-08-12", scope: "Functional sweep batches 1–2 (10 screens)", outcome: "2 Critical, 3 High, 4 Medium, 2 Low, 1 retracted", url: "https://app.notion.com/p/3ba0f4c873ef81cc90fffbc2a3c3250e" },
   ],
   quickLinks: [
     { title: "Dost Portal — Master Test Map", url: "https://app.notion.com/p/3bf0f4c873ef8162aa65ddf65409a864", scope: "The index — what was tested, when, against which baseline" },
@@ -104,6 +124,7 @@ export const dashboardData = {
     { title: "QA Baseline — Spanish Localization Sweep — 2026-08-11", url: "https://app.notion.com/p/3b90f4c873ef81308e5ed90ec632bfff", scope: "Spanish UI, 29 findings" },
     { title: "QA Functional Baseline — 2026-08-12", url: "https://app.notion.com/p/3ba0f4c873ef81cc90fffbc2a3c3250e", scope: "10 screens, functional behaviour" },
     { title: "QA Baseline — Workflow Templates — 2026-08-17", url: "https://app.notion.com/p/3bf0f4c873ef81d3b5adcc2a8406bade", scope: "Workflow Templates first pass" },
+    { title: "QA Baseline — Catalog Dimensions CRUD — 2026-08-19", url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66", scope: "Catalog Dimensions, CRUD-only scope — screen permission-gated, no CRUD possible" },
   ],
   blockers: [
     "Sentry holds no data. Project mydost-web under org dost-sn returned zero events across 90 days. Every \"no matching Sentry issue found\" carries no evidential weight.",
@@ -112,5 +133,6 @@ export const dashboardData = {
     "Upload pipeline currently returns 500, blocking all downstream extraction and classification testing.",
     "5 campaigns have no baseline page (modal consistency, Ask Dost, file upload, document upload, performance) — their findings cannot be regression-compared.",
     "Screenshots cannot be committed by the agent — binary files exceed what the GitHub tool can carry. Evidence images must be added to public/screenshots/ by hand, or the entry uses an SVG mockup instead.",
+    "Catalog › Dimensions CRUD test (2026-08-19) could not proceed at all — the screen is permission-gated for the only available test account, and role/tenant switching is out of agent scope.",
   ],
 };
