@@ -1,22 +1,22 @@
-// Snapshot of the Dost Portal QA Dashboard (Notion) as of 2026-08-19.
+// Snapshot of the Dost Portal QA Dashboard (Notion) as of 2026-08-20.
 // To refresh: update this file manually, or wire up scripts/sync-notion.js
 // (see README) to pull live data via the Notion API.
 
 export const dashboardData = {
   environment: "dev-mydost-webapp-dostui.azurewebsites.net",
-  lastRun: "2026-08-19 (regression) — Dimensions CRUD & validation re-tested against the same-day baseline. Both prior High findings (H11 raw error keys, H12 Value data-loss) verified FIXED by active re-test. Value field/column removed from the Dimension level entirely (not fixed in place), which also resolves the earlier Medium cold-nav column-mismatch finding as a side effect. 2 new Medium (Code now required at both levels, undocumented vs baseline; 'Dimension Values' page shows a generic heading instead of '{Name}'s Values' on cold nav — same context-loss pattern recurring) and 1 new Low (dead whitespace right of Actions column at 1920px). Responsive clean at 375/1280/1440/1920px, no horizontal overflow. No console errors or failed requests outside expected/handled 400s. All test data cleaned up",
+  lastRun: "2026-08-20 (first pass) — Row/table action menu (kebab) across 7 Payables & Receivables listings (Purchase Invoices, Purchase Orders, Purchase Delivery Notes, Payables Unclassified, Sales Invoices, Sales Orders, Sales Delivery Note), regression-testing the table-menu-actions refactor for behaviour changes. 0 Critical/High findings. 1 new Medium (Sales Orders row menu orders the duplicate/create action after Delete, inconsistent with every other screen tested, which orders it before Delete). 2 new Low (transient stale page <title> after back-navigation that self-corrects; an aria-hidden/focus console warning when View Document opens a new tab). Full expected menu-item superset (Review Document, Download with CSV/JSON/Template submenu, View Document, View Discrepancies, View History, View Reference Documents, View Notes, Assign Workflow, Make Payment, Duplicate/Create actions, Delete) confirmed present and correctly conditional by document type and tax protocol (Verifactu, SDI) on 6 of 7 screens. Purchase Delivery Notes had zero rows in this tenant, so its action menu remains genuinely untested. All safe read-only items click-tested (Review Document, View Document, View History, View Notes, View Reference Documents, all Duplicate/Create-document actions) and confirmed to open/navigate/close cleanly. 0 console errors and 0 failed network requests across all 7 screens. Create Verifactu/SDI/SII credit-note/debit-note/corrective-invoice/replacement-form submenus and Send PA Status could not be evaluated — no document in this tenant's dev data is in a state that surfaces them",
   summary: {
-    coverage: { tested: 39, total: 50, percent: 78 },
-    neverTested: 11,
+    coverage: { tested: 44, total: 50, percent: 88 },
+    neverTested: 10,
     stale: 0,
     defectThemes: 6,
-    activeBaselines: 4,
+    activeBaselines: 5,
   },
   severity: [
     { level: "Critical", count: 6, note: "All enumerated below — unchanged", exact: true },
-    { level: "High", count: 9, note: "All enumerated below — was 11 (H11, H12 added 2026-08-19 first pass); both RESOLVED 2026-08-19 regression run, verified by active re-test, moved to Resolved/reclassified", exact: true },
-    { level: "Medium", count: 52, note: "Aggregate across campaigns — dominated by 22 untranslated-copy items and 7 raw-identifier items from the localization sweep, plus open modal-divider findings, remaining Dimensions findings (no numeric validation on Value, no uniqueness on Name/Code, informational special-chars note), and 2 new from the 2026-08-19 regression run (Code newly required at both Dimension levels; generic 'Dimension Values' heading on cold nav)", exact: false },
-    { level: "Low", count: 9, note: "Cosmetic and polish — +1 from 2026-08-19 regression run (dead whitespace at 1920px on Dimensions table)", exact: false },
+    { level: "High", count: 9, note: "All enumerated below — unchanged this run (0 new Critical/High from the 2026-08-20 row-action-menu sweep)", exact: true },
+    { level: "Medium", count: 53, note: "Aggregate across campaigns — dominated by 22 untranslated-copy items and 7 raw-identifier items from the localization sweep, plus open modal-divider findings, remaining Dimensions findings, and +1 from the 2026-08-20 row-action-menu run (Sales Orders menu-item ordering inconsistency)", exact: false },
+    { level: "Low", count: 11, note: "Cosmetic and polish — +2 from the 2026-08-20 row-action-menu run (transient stale title, aria-hidden focus warning)", exact: false },
   ],
   critical: [
     { id: "C1", issue: "All 7 chart widgets fail — three DynamicAnalyticsParquet endpoints return 404", screen: "Analytics", source: "Functional Baseline 2026-08-12", url: "https://app.notion.com/p/3ba0f4c873ef81cc90fffbc2a3c3250e" },
@@ -40,8 +40,10 @@ export const dashboardData = {
   // H6 (Add/Update Individual Mapping had no Save/Cancel) was RESOLVED 2026-08-18
   // and removed from `high`. H11 and H12 (Dimensions) were added 2026-08-19 on
   // the first-pass baseline and RESOLVED 2026-08-19 on the same-day regression
-  // run below — both verified by active re-test, not absence. IDs are
-  // intentionally not renumbered so existing references stay valid.
+  // run — both verified by active re-test, not absence. The 2026-08-20 row-
+  // action-menu sweep found 0 Critical/High, so no IDs were added or removed
+  // this run. IDs are intentionally not renumbered so existing references stay
+  // valid.
 
   // defectThemes: each entry is { status, text }.
   //   status: "open"   — still outstanding
@@ -106,8 +108,24 @@ export const dashboardData = {
       afterAlt: null,
       url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66",
     },
+    {
+      title: "Row/table action menu (kebab) — post-refactor regression pass, 7 Payables & Receivables listings",
+      date: "2026-08-20",
+      screen: "Payables › Purchase Invoices/Orders/Delivery Notes/Unclassified, Receivables › Sales Invoices/Orders/Delivery Note",
+      status: "open",
+      summary:
+        "First functional baseline at this granularity for the table-menu-actions refactor. Full expected menu-item superset (Review Document, Download with submenu, View Document, View Discrepancies, View History, View Reference Documents, View Notes, Assign Workflow, Make Payment, Duplicate/Create, Delete) confirmed present and correctly conditional by document type and tax protocol on 6 of 7 screens — Purchase Delivery Notes had zero rows in this tenant. One Medium ordering inconsistency found: Sales Orders places the duplicate/create action after Delete, while Purchase Orders and Sales Delivery Note correctly place the equivalent action before Delete. All safe read-only items (Review Document, View Document, View History, View Notes, View Reference Documents, Duplicate actions) were click-tested and confirmed to work cleanly with 0 console errors and 0 failed requests across all 7 screens. Create Verifactu/SDI/SII credit-note/debit-note/corrective-invoice/replacement-form submenus and Send PA Status could not be evaluated — no document in this tenant is in the state that surfaces them. PNG screenshots were captured locally during the run but not committed here (binary cannot be carried by this sync path) — see the Notion baseline for the full menu-item-by-screen table.",
+      before: null,
+      beforeLabel: null,
+      beforeAlt: null,
+      after: null,
+      afterLabel: null,
+      afterAlt: null,
+      url: "https://app.notion.com/p/3c20f4c873ef8112bb69de27f7538dbf",
+    },
   ],
   recentRuns: [
+    { date: "2026-08-20", scope: "Row/table action menu (kebab) — 7 Payables & Receivables listings, regression-testing the table-menu-actions refactor", outcome: "New 3 (1 Medium: Sales Orders duplicate/create action ordered after Delete, inconsistent with every other screen tested. 2 Low: transient stale page title after back-nav, self-correcting; aria-hidden focus-conflict console warning on View Document). Fixed 0 (no prior baseline existed at this granularity). Persisting 0. Full expected menu-item superset confirmed present and correctly conditional by document type/tax protocol on 6 of 7 screens; Purchase Delivery Notes had zero rows, action menu unexercised there. All safe read-only items click-tested and confirmed working. 0 console errors, 0 failed network requests across all 7 screens", url: "https://app.notion.com/p/3c20f4c873ef8112bb69de27f7538dbf" },
     { date: "2026-08-19", scope: "Dimensions CRUD & validation (regression, re-test of same-day baseline) + responsive pass 375/1280/1440/1920px", outcome: "Fixed 3 (H11 raw error keys — verified re-test; H12 Value data-loss — verified re-test; Medium Value-column cold-nav mismatch — resolved as a side effect). New 3 (2 Medium: Code newly required at both levels; generic Dimension Values heading on cold nav. 1 Low: dead whitespace at 1920px). Persisting/not re-tested: numeric validation on Value, Name/Code uniqueness, special-char rendering. No console errors, no failed requests outside expected 400s. All test data cleaned up", url: "https://app.notion.com/p/3c10f4c873ef814087fdd1c0b69c82ec" },
     { date: "2026-08-19", scope: "Dimensions CRUD & validation (first pass, correct route /dimension)", outcome: "COMPLETED — full CRUD + validation on Dimension and Dimension Values levels; prior 'permission-locked' conclusion superseded as a routing error. 2 High, 4 Medium new findings; all QA-TEST- records cleaned up", url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66" },
     { date: "2026-08-19", scope: "Catalog › Dimensions CRUD attempt (CRUD-only scope, mid-run trim) — SUPERSEDED", outcome: "Reported as permission-blocked; corrected same day — the screen was tested at the wrong URL (/catalog/dimensions instead of /dimension). See the completed run above for the real result", url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66" },
@@ -117,7 +135,6 @@ export const dashboardData = {
     { date: "2026-08-17", scope: "Modal consistency — Bank + missed screens (15 modals)", outcome: "3 fail: 2 confirm dialogs, Create workflow template", url: null },
     { date: "2026-08-17", scope: "Modal consistency — first sweep (16 modals)", outcome: "4 fail; 2 later ruled N/A", url: null },
     { date: "2026-08-17", scope: "Upload & document creation — Documents, Payables, Receivables", outcome: "2 Critical (500s), oversized-file PERSISTING", url: null },
-    { date: "2026-08-17", scope: "Ask Dost — 21-case re-run + Spanish case 20", outcome: "Tables/charts FIXED; approval flow intermittent; approval-card labels NEW", url: null },
   ],
   quickLinks: [
     { title: "Dost Portal — Master Test Map", url: "https://app.notion.com/p/3bf0f4c873ef8162aa65ddf65409a864", scope: "The index — what was tested, when, against which baseline" },
@@ -127,6 +144,7 @@ export const dashboardData = {
     { title: "QA Functional Baseline — 2026-08-12", url: "https://app.notion.com/p/3ba0f4c873ef81cc90fffbc2a3c3250e", scope: "10 screens, functional behaviour" },
     { title: "QA Baseline — Workflow Templates — 2026-08-17", url: "https://app.notion.com/p/3bf0f4c873ef81d3b5adcc2a8406bade", scope: "Workflow Templates first pass" },
     { title: "QA Baseline — Dimensions CRUD & Validation — 2026-08-19", url: "https://app.notion.com/p/3c10f4c873ef81b5aa45e6ad2ae45b66", scope: "Dimensions + Dimension Values, CRUD-and-validation-only scope — full pass completed; both High findings fixed as of the 2026-08-19 regression run" },
+    { title: "QA Baseline — Row Action Menu — Payables & Receivables — 2026-08-20", url: "https://app.notion.com/p/3c20f4c873ef8112bb69de27f7538dbf", scope: "Row/table kebab action menu, 7 Payables & Receivables listings — first pass, post table-menu-actions refactor regression check" },
   ],
   blockers: [
     "Sentry holds no data. Project mydost-web under org dost-sn returned zero events across 90 days. Every \"no matching Sentry issue found\" carries no evidential weight.",
@@ -135,5 +153,6 @@ export const dashboardData = {
     "Upload pipeline currently returns 500, blocking all downstream extraction and classification testing.",
     "5 campaigns have no baseline page (modal consistency, Ask Dost, file upload, document upload, performance) — their findings cannot be regression-compared.",
     "Screenshots cannot be committed by the agent — binary files exceed what the GitHub tool can carry. Evidence images must be added to public/screenshots/ by hand, or the entry uses an SVG mockup instead.",
+    "Payables › Purchase Delivery Notes has zero rows in this dev tenant — its row action menu cannot be exercised until test data exists.",
   ],
 };
